@@ -1,5 +1,4 @@
-define( ['transosc'],
-function (TransOsc) {
+define( ['transosc'], function (TransOsc) {
 
 	function App() {
 	}
