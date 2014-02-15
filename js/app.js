@@ -1,4 +1,4 @@
-define( ['transosc'], function (TransOsc) {
+define( ['transosc', 'webcam'], function (TransOsc, WebCam) {
 
 	function App() {
 	}
@@ -22,17 +22,18 @@ define( ['transosc'], function (TransOsc) {
 	}
 
 	App.prototype.init = function() {
-		// this.canvas = $('#canvas');
-		this.width = window.innerWidth;
-		this.height = window.innerHeight;
-		console.log("width: " + this.width + ", height: " + this.height);
-		var ctx = new AudioContext(),
+		var canvas = $('#cvs'),
+		video = $('vid'),
+		webcam = new WebCam(canvas, video),
+		audioContext = new AudioContext(),
 		delay = 300,
 		numPartials = 32,
 		funFreq = 40,
 		partials = makeTestPartials(numPartials),
-		osc = new TransOsc(ctx, numPartials, funFreq);
+		osc = new TransOsc(audioContext, numPartials, funFreq);
 
+		webcam.init();
+		webcam.start();
 		osc.setPartials(partials);
 		osc.start();
 		interval = setInterval(testTransOsc, delay, osc, partials);
