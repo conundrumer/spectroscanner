@@ -22,8 +22,8 @@ define( ['transosc', 'webcam'], function (TransOsc, WebCam) {
 	}
 
 	App.prototype.init = function() {
-		var canvas = $('#cvs'),
-		video = $('vid'),
+		var canvas = document.getElementById('cvs'),
+		video = document.getElementById('vid'),
 		webcam = new WebCam(canvas, video),
 		audioContext = new AudioContext(),
 		delay = 300,
@@ -35,8 +35,8 @@ define( ['transosc', 'webcam'], function (TransOsc, WebCam) {
 		webcam.init();
 		webcam.start();
 		osc.setPartials(partials);
-		osc.start();
-		interval = setInterval(testTransOsc, delay, osc, partials);
+		// osc.start();
+		// interval = setInterval(testTransOsc, delay, osc, partials);
 	};
 
 	return App;
