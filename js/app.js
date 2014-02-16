@@ -1,4 +1,4 @@
-define( ['transosc', 'webcam'], function (TransOsc, WebCam) {
+define( ['transosc', 'webcam', 'img2amp'], function (TransOsc, WebCam, Img2Amp) {
 
 	function App() {
 	}
@@ -21,22 +21,31 @@ define( ['transosc', 'webcam'], function (TransOsc, WebCam) {
 		osc.setPartials(partials);
 	}
 
+	function testImg2Amp(img2amp, col, width, osc) {
+		var slice = img2amp.getSlice(col);
+		console.log(slice);
+		osc.setPartials(slice);
+		setTimeout(testImg2Amp, 100, img2amp, col+1, width, osc);
+	}
+
 	App.prototype.init = function() {
 		var canvas = document.getElementById('cvs'),
 		video = document.getElementById('vid'),
 		webcam = new WebCam(canvas, video),
 		audioContext = new AudioContext(),
-		delay = 300,
-		numPartials = 32,
-		funFreq = 40,
+		delay = 100,
+		numPartials = 4000,
+		funFreq = 10,
 		partials = makeTestPartials(numPartials),
 		osc = new TransOsc(audioContext, numPartials, funFreq);
 
 		webcam.init();
 		webcam.start();
 		osc.setPartials(partials);
-		// osc.start();
+		osc.start();
 		// interval = setInterval(testTransOsc, delay, osc, partials);
+		var img2amp = new Img2Amp(canvas);
+		setTimeout(testImg2Amp, delay, img2amp, 0, canvas.width, osc);
 	};
 
 	return App;
