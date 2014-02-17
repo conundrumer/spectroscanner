@@ -14,10 +14,13 @@ define (function () {
             return slice;
         },
         getAmp: function (x, y, data) {
-            var i = y * this.canvas.width + x * 4;
-            return (data[i] + data[i+1] + data[i+2])*(data[i] + data[i+1] + data[i+2]);
+            var i = (this.canvas.height - y) * this.canvas.width + x,
+            r = data[i],
+            g = data[i+1],
+            b = data[i+2];
+            return 255 - ((r + g + b)/3);
         }
-    }
+    };
 
     return Img2Amp;
 

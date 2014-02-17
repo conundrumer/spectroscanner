@@ -5,13 +5,15 @@
  */
 define(['periodosc'], function(PeriodOsc) {
 
-	function TransOsc(ctx, numPartials, funFreq) {
+	function TransOsc(ctx, numBands, low, high) {
+		var spacing = (high - low) / numBands;
+		var numPartials = Math.floor(high/spacing);
+		this.low = Math.floor(low/spacing);
 		this.ctx = ctx;
-		// this.numPartials = numPartials;
-		// this.funFreq = funFreq;
+		console.log();
 		this.real = new Float32Array(numPartials);
 		this.imag = new Float32Array(numPartials);
-		this.oscs = [new PeriodOsc(ctx, funFreq), new PeriodOsc(ctx, funFreq)];
+		this.oscs = [new PeriodOsc(ctx, spacing), new PeriodOsc(ctx, spacing)];
 		this.curOscIndex = 0;
 	}
 
@@ -29,7 +31,7 @@ define(['periodosc'], function(PeriodOsc) {
 		},
 		setPartials: function (partials) {
 			for (var i = 0; i < partials.length; i++) {
-				this.real[i] = partials[i];
+				this.real[i+this.low] = partials[i];
 			}
 			var wave = this.ctx.createPeriodicWave(this.real, this.imag);
 			this.nextOsc.setWave(wave);

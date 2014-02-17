@@ -1,5 +1,5 @@
 define( ['transosc', 'webcam', 'img2amp'], function (TransOsc, WebCam, Img2Amp) {
-
+	var delay = 10;
 	function App() {
 	}
 
@@ -7,25 +7,18 @@ define( ['transosc', 'webcam', 'img2amp'], function (TransOsc, WebCam, Img2Amp) 
 		a.unshift(a.pop());
 	}
 
-	function makeTestPartials(n) {
-		var partials = new Array(n);
-		for (var i = 0; i < n; i++) {
-			partials[i] = 0;
-		}
-		partials[1] = 1;
-		return partials;
-	}
-
-	function testTransOsc(osc, partials) {
-		rotate(partials);
-		osc.setPartials(partials);
-	}
-
-	function testImg2Amp(img2amp, col, width, osc) {
+	function testImg2Amp(img2amp, col, osc,canvas) {
 		var slice = img2amp.getSlice(col);
-		console.log(slice);
+		var ctx = canvas.getContext('2d');
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		ctx.beginPath();
+		ctx.strokeStyle = 'red';
+		ctx.moveTo(col, 0);
+		ctx.lineTo(col, canvas.height);
+		ctx.stroke();
 		osc.setPartials(slice);
-		setTimeout(testImg2Amp, 100, img2amp, col+1, width, osc);
+		ctx.closePath();
+		setTimeout(testImg2Amp, delay, img2amp, (col+1)%canvas.width, osc, canvas);
 	}
 
 	App.prototype.init = function() {
@@ -33,19 +26,26 @@ define( ['transosc', 'webcam', 'img2amp'], function (TransOsc, WebCam, Img2Amp) 
 		video = document.getElementById('vid'),
 		webcam = new WebCam(canvas, video),
 		audioContext = new AudioContext(),
-		delay = 100,
-		numPartials = 4000,
-		funFreq = 10,
-		partials = makeTestPartials(numPartials),
-		osc = new TransOsc(audioContext, numPartials, funFreq);
+		numBands = canvas.height,
+		low = 32,
+		high = 4096,
+		osc = new TransOsc(audioContext, numBands, low, high);
 
 		webcam.init();
-		webcam.start();
-		osc.setPartials(partials);
 		osc.start();
-		// interval = setInterval(testTransOsc, delay, osc, partials);
 		var img2amp = new Img2Amp(canvas);
-		setTimeout(testImg2Amp, delay, img2amp, 0, canvas.width, osc);
+		var scanline = document.getElementById('scanline');
+		setTimeout(testImg2Amp, delay, img2amp, 0, osc, scanline);
+
+		// webcam.start();
+		context = canvas.getContext('2d');
+		context.fillStyle = 'white';
+		context.fillRect(0, 0, canvas.width, canvas.height);
+		context.beginPath();
+		context.moveTo(0, 0);
+		context.lineTo(canvas.width, canvas.height);
+		context.stroke();
+		context.closePath();
 	};
 
 	return App;
