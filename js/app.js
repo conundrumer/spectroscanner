@@ -1,5 +1,5 @@
 define( ['transosc', 'webcam', 'img2amp'], function (TransOsc, WebCam, Img2Amp) {
-	var delay = 10;
+	var delay = 20;
 	function App() {
 	}
 
@@ -16,9 +16,20 @@ define( ['transosc', 'webcam', 'img2amp'], function (TransOsc, WebCam, Img2Amp) 
 		ctx.moveTo(col, 0);
 		ctx.lineTo(col, canvas.height);
 		ctx.stroke();
-		osc.setPartials(slice);
 		ctx.closePath();
+		osc.setPartials(slice, 255);
 		setTimeout(testImg2Amp, delay, img2amp, (col+1)%canvas.width, osc, canvas);
+	}
+
+	function testOsc(canvas) {
+		context = canvas.getContext('2d');
+		context.fillStyle = 'white';
+		context.fillRect(0, 0, canvas.width, canvas.height);
+		context.beginPath();
+		context.moveTo(0, 0);
+		context.lineTo(canvas.width, canvas.height);
+		context.stroke();
+		context.closePath();
 	}
 
 	App.prototype.init = function() {
@@ -37,15 +48,8 @@ define( ['transosc', 'webcam', 'img2amp'], function (TransOsc, WebCam, Img2Amp) 
 		var scanline = document.getElementById('scanline');
 		setTimeout(testImg2Amp, delay, img2amp, 0, osc, scanline);
 
-		// webcam.start();
-		context = canvas.getContext('2d');
-		context.fillStyle = 'white';
-		context.fillRect(0, 0, canvas.width, canvas.height);
-		context.beginPath();
-		context.moveTo(0, 0);
-		context.lineTo(canvas.width, canvas.height);
-		context.stroke();
-		context.closePath();
+		webcam.start();
+		// testOsc(canvas);
 	};
 
 	return App;

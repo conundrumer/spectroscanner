@@ -1,4 +1,5 @@
 define (function () {
+    var threshold = 100;
     function Img2Amp (canvas) {
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
@@ -18,7 +19,7 @@ define (function () {
             r = data[i],
             g = data[i+1],
             b = data[i+2];
-            return 255 - ((r + g + b)/3);
+            return Math.max((255-((r + g + b)/3))-threshold, 0);
         }
     };
 

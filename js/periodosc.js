@@ -4,6 +4,7 @@
  */
 define(function() {
 	function PeriodOsc(ctx, funFreq) {
+		this.gain = 1;
 		this.FADE_TIME = 0.01; // seconds
 		var osc = ctx.createOscillator(),
 		gainNode = ctx.createGain();
@@ -22,18 +23,17 @@ define(function() {
 		stop: function() {
 			this.osc.stop(this.ctx.currentTime);
 		},
-		fadeIn: function() {
-			this.setGain(1);
+		fadeIn: function(g) {
+			this.gain = g;
+			this.gainNode.gain.linearRampToValueAtTime(0, this.ctx.currentTime);
+			this.gainNode.gain.linearRampToValueAtTime(g, this.ctx.currentTime + this.FADE_TIME);
 		},
 		fadeOut: function() {
-			this.setGain(0);
+			this.gainNode.gain.linearRampToValueAtTime(this.gain, this.ctx.currentTime);
+			this.gainNode.gain.linearRampToValueAtTime(0, this.ctx.currentTime + this.FADE_TIME);
 		},
 		setWave: function (wave) {
 			this.osc.setPeriodicWave(wave);
-		},
-		setGain: function(g) {
-			this.gainNode.gain.linearRampToValueAtTime(1-g, this.ctx.currentTime);
-			this.gainNode.gain.linearRampToValueAtTime(g, this.ctx.currentTime + this.FADE_TIME);
 		}
 	};
 
