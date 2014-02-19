@@ -5,7 +5,7 @@
 define(function() {
 	function PeriodOsc(ctx, funFreq) {
 		this.gain = 1;
-		this.FADE_TIME = 0.01; // seconds
+		this.FADE_TIME = 0.001; // seconds
 		var osc = ctx.createOscillator(),
 		gainNode = ctx.createGain();
 		osc.frequency.value = funFreq;

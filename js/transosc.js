@@ -4,16 +4,14 @@
  * Crossfades between two PeriodOscs to simulate windowing to avoid clicks
  */
 define(['periodosc'], function(PeriodOsc) {
-	var numPartials = 2000;
-	var foo = true;
+	// var foo = true;
 
-	function TransOsc(ctx, numBands, low, high) {
-		var funFreq = high / numPartials;
-		this.numBands = numBands;
-		this.low = Math.floor(low/funFreq);
-		console.log(funFreq, this.low);
+	function TransOsc(ctx, height, maxFreq) {
+		var funFreq = maxFreq / height;
+		var numPartials = height;
+		// this.low = Math.floor(low/funFreq);
+		// console.log(funFreq, this.low);
 		this.ctx = ctx;
-		console.log();
 		this.real = new Float32Array(numPartials);
 		this.imag = new Float32Array(numPartials);
 		this.oscs = [new PeriodOsc(ctx, funFreq), new PeriodOsc(ctx, funFreq)];
@@ -35,20 +33,20 @@ define(['periodosc'], function(PeriodOsc) {
 		setPartials: function (partials, maxGain) {
 			gain = 0;
 			for (var i = 0; i < partials.length; i++) {
-				// logarithmic spacing
-				var normalized = Math.pow(2, (i)/(this.numBands));
-				var n = Math.round(numPartials*(normalized - 1));
-				this.real[n] = partials[i];
+				// TODO: logarithmic spacing
+				// var normalized = Math.pow(2, (i)/(this.numBands));
+				// var n = Math.round(numPartials*(normalized - 1));
+				this.real[i] = partials[i];
 				gain += partials[i];
-				if (foo) {
-					console.log(normalized);
-				}
+				// if (foo) {
+				//	console.log(normalized);
+				// }
 			}
 			gain /= maxGain*partials.length;
 			foo = false;
 			var wave = this.ctx.createPeriodicWave(this.real, this.imag);
 			this.nextOsc.setWave(wave);
-			this.switchOscs(0.3 + 0.7*gain);
+			this.switchOscs(0.5 + 0.5*gain);
 		},
 		start: function () {
 			this.curOsc.start();

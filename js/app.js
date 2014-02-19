@@ -1,5 +1,5 @@
 define( ['transosc', 'webcam', 'img2amp'], function (TransOsc, WebCam, Img2Amp) {
-	var delay = 20;
+	var delay = 0.1;
 	function App() {
 	}
 
@@ -9,6 +9,12 @@ define( ['transosc', 'webcam', 'img2amp'], function (TransOsc, WebCam, Img2Amp) 
 
 	function testImg2Amp(img2amp, col, osc,canvas) {
 		var slice = img2amp.getSlice(col);
+		drawScanline(canvas, col);
+		osc.setPartials(slice, 255);
+		setTimeout(testImg2Amp, delay, img2amp, (col+1)%canvas.width, osc, canvas);
+	}
+
+	function drawScanline(canvas, col) {
 		var ctx = canvas.getContext('2d');
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 		ctx.beginPath();
@@ -17,8 +23,6 @@ define( ['transosc', 'webcam', 'img2amp'], function (TransOsc, WebCam, Img2Amp) 
 		ctx.lineTo(col, canvas.height);
 		ctx.stroke();
 		ctx.closePath();
-		osc.setPartials(slice, 255);
-		setTimeout(testImg2Amp, delay, img2amp, (col+1)%canvas.width, osc, canvas);
 	}
 
 	function testOsc(canvas) {
@@ -38,9 +42,9 @@ define( ['transosc', 'webcam', 'img2amp'], function (TransOsc, WebCam, Img2Amp) 
 		webcam = new WebCam(canvas, video),
 		audioContext = new AudioContext(),
 		numBands = canvas.height,
-		low = 32,
-		high = 4096,
-		osc = new TransOsc(audioContext, numBands, low, high);
+		// low = 32,
+		high = 10000,
+		osc = new TransOsc(audioContext, numBands, high);
 
 		webcam.init();
 		osc.start();

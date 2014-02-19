@@ -12,14 +12,21 @@ define (function () {
             for (var y = 0; y < this.canvas.height; y++) {
                 slice[y] = this.getAmp(col, y, imageData.data);
             }
+            slice.reverse();
+            // this.context.putImageData(imageData, 0, 0);
             return slice;
         },
         getAmp: function (x, y, data) {
-            var i = (this.canvas.height - y) * this.canvas.width + x,
+            var i = this.getIndex(x, y),
             r = data[i],
             g = data[i+1],
             b = data[i+2];
-            return Math.max((255-((r + g + b)/3))-threshold, 0);
+            var a = 255-((r + g + b)/3);
+            // data[i] = data[i+1] = data[i+2] = a;
+            return Math.max(a-threshold, 0);
+        },
+        getIndex: function(x, y) {
+            return (y * this.canvas.width + x) * 4;
         }
     };
 
