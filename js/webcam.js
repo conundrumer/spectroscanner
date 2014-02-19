@@ -1,11 +1,12 @@
 /**
  * WebCam: gets video input and puts it on a canvas
  */
-define(function() {
-	var FPS = 10;
+define(['img2amp'], function(Img2amp) {
+	var FPS = 5;
 	function WebCam(canvas, video) {
-		this.canvas = canvas;
 		this.video = video;
+		this.width = video.width;
+		this.height = video.height;
 		this.context = canvas.getContext('2d');
 		this.context.translate(canvas.width, 0);
 		this.context.scale(-1, 1);
@@ -23,13 +24,26 @@ define(function() {
 
 		},
 		start: function () {
-			this.video.play();
+			var video = this.video;
+			video.play();
 			var that = this;
 			var renderTimer = setInterval(function() {
-				that.context.drawImage(that.video, 0, 0, that.video.width, that.video.height);
+				that.context.drawImage(video, 0, 0, that.width, that.height);
+				var image = that.context.getImageData(0,0,that.width, that.height);
+				Img2amp.filter(image, that.width, that.height);
+				that.context.putImageData(image, 0, 0);
 			}, Math.round(1000 / FPS));
+		},
+		getSlice: function(col) {
+			var image = this.context.getImageData(0,0,this.width, this.height);
+			var slice = [];
+			for (var y = 0; y < this.height; y++) {
+				var i = (y * this.width + col) * 4;
+				slice[y] = image.data[i];
+			}
+			slice.reverse();
+			return slice;
 		}
 	};
-
 	return WebCam;
 });

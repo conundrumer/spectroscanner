@@ -46,7 +46,7 @@ define(['periodosc'], function(PeriodOsc) {
 			foo = false;
 			var wave = this.ctx.createPeriodicWave(this.real, this.imag);
 			this.nextOsc.setWave(wave);
-			this.switchOscs(0.5 + 0.5*gain);
+			this.switchOscs(Math.pow(gain, 0.5));
 		},
 		start: function () {
 			this.curOsc.start();
