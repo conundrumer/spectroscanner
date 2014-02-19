@@ -2,7 +2,7 @@
  * WebCam: gets video input and puts it on a canvas
  */
 define(['img2amp'], function(Img2amp) {
-	var FPS = 5;
+	var FPS = 20;
 	function WebCam(canvas, video, preview) {
 		this.preview = preview;
 		this.video = video;
