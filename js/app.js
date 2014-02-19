@@ -7,14 +7,14 @@ define( ['transosc', 'webcam'], function (TransOsc, WebCam) {
 		a.unshift(a.pop());
 	}
 
-	function testImg2Amp(webcam, col, osc,canvas) {
+	function testImg2Amp(webcam, col, osc,canvas, scan) {
 		var slice = webcam.getSlice(col);
-		drawScanline(canvas, col);
+		drawScanline(canvas, col, scan);
 		osc.setPartials(slice, 255);
-		setTimeout(testImg2Amp, delay, webcam, (col+1)%(canvas.width), osc, canvas);
+		setTimeout(testImg2Amp, delay, webcam, (col+1)%(canvas.width), osc, canvas, scan);
 	}
 
-	function drawScanline(canvas, col) {
+	function drawScanline(canvas, col, scan) {
 		var ctx = canvas.getContext('2d');
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 		ctx.beginPath();
@@ -23,6 +23,7 @@ define( ['transosc', 'webcam'], function (TransOsc, WebCam) {
 		ctx.lineTo(col, canvas.height);
 		ctx.stroke();
 		ctx.closePath();
+		scan.putImageData(ctx.getImageData(0,0,canvas.width,canvas.height), 0, 0);
 	}
 
 	function testOsc(canvas) {
@@ -39,17 +40,23 @@ define( ['transosc', 'webcam'], function (TransOsc, WebCam) {
 	App.prototype.init = function() {
 		var canvas = document.getElementById('cvs'),
 		video = document.getElementById('vid'),
-		webcam = new WebCam(canvas, video),
+		preview = document.getElementById('preview'),
+		scanline = document.getElementById('scanline'),
+		scan = document.getElementById('bigscan'),
+		webcam = new WebCam(canvas, video, preview),
 		audioContext = new AudioContext(),
 		numBands = canvas.height,
 		// low = 32,
 		high = 4000,
 		osc = new TransOsc(audioContext, numBands, high);
 
+		var bigScan = scan.getContext('2d');
+		var scale = Math.min(scanline.width / bigScan.width, scanline.height/ bigScan.height);
+		bigScan.scale(scale, scale);
+
 		webcam.init();
 		osc.start();
-		var scanline = document.getElementById('scanline');
-		setTimeout(testImg2Amp, delay, webcam, 1, osc, scanline);
+		setTimeout(testImg2Amp, delay, webcam, 1, osc, scanline, bigScan);
 
 		webcam.start();
 		// testOsc(canvas);

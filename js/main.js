@@ -13,4 +13,11 @@ function ( App ) {
 	var app = new App();
 	$(document).ready(app.init);
 
+	$(window).bind("resize", function(){
+		var w = $(window).width();
+		var h = $(window).height();
+		$("#preview").css("width", w + "px");
+		$("#preview").css("height", h + "px");
+	});
+
 });
