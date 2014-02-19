@@ -43,7 +43,7 @@ define( ['transosc', 'webcam'], function (TransOsc, WebCam) {
 		audioContext = new AudioContext(),
 		numBands = canvas.height,
 		// low = 32,
-		high = 8000,
+		high = 4000,
 		osc = new TransOsc(audioContext, numBands, high);
 
 		webcam.init();
