@@ -16,6 +16,9 @@ define(['img2amp'], function(Img2amp) {
 		navigator.getUserMedia({video: true},
 			function(stream) {
 				video.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
+			},
+			function(error) {
+				console.log("Failed to get capture:", error);
 			});
 	}
 
