@@ -13,6 +13,9 @@ define(['img2amp'], function(Img2amp) {
 		this.context.scale(-1, 1);
 		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 		window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
+		if (!(navigator.getUserMedia instanceof Function)) {
+			alert('Your browser does not support webcam capture! :(')
+		}
 		navigator.getUserMedia({video: true},
 			function(stream) {
 				video.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
